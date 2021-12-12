@@ -1,2 +1,3 @@
 # ACSEF2022
-Class of 2025
+"Monitoring Social Distancing Using Pedestrian Image Recognition to Mitigate the Spread of COVID-19"
+Super long title I know
