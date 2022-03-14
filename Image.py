@@ -1,8 +1,16 @@
 import cv2
 import numpy as np
 
-def distancing(box = []):
-    cx, cy, x, y, w, h = box
+minDist = 10
+
+def close(i, j):
+    return False
+
+def distancing(ind):
+    for i in range(len(boxes)):
+        if not i == ind:
+            if close(ind, i):
+                return False
     return True
 
 net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
@@ -48,7 +56,7 @@ for i in range(len(boxes)):
     if i in indexes:
         cx, cy, x, y, w, h = boxes[i]
         label = str(classes[class_ids[i]])
-        if distancing(boxes[i]):
+        if distancing(i):
             color = (0, 255, 0)
         else:
             color = (0, 0, 255)
