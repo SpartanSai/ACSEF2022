@@ -2,8 +2,20 @@ import cv2
 import numpy as np
 import time
 
+minDist = 10
+
+def close(i, j):
+    return False
+
+def distancing(ind):
+    for i in range(len(boxes)):
+        if not i == ind:
+            if close(ind, i):
+                return False
+    return True
+
 # Load Yolo
-net = cv2.dnn.readNet("weights/yolov3-tiny.weights", "cfg/yolov3-tiny.cfg")
+net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
 classes = []
 with open("coco.names", "r") as f:
     classes = [line.strip() for line in f.readlines()]
@@ -38,7 +50,7 @@ while True:
             scores = detection[5:]
             class_id = np.argmax(scores)
             confidence = scores[class_id]
-            if confidence > 0.2:
+            if confidence > 0.2 and str(classes[class_id]) == 'person':
                 # Object detected
                 center_x = int(detection[0] * width)
                 center_y = int(detection[1] * height)
@@ -49,7 +61,7 @@ while True:
                 x = int(center_x - w / 2)
                 y = int(center_y - h / 2)
 
-                boxes.append([x, y, w, h])
+                boxes.append([center_x, center_y, x, y, w, h])
                 confidences.append(float(confidence))
                 class_ids.append(class_id)
 
@@ -57,13 +69,13 @@ while True:
 
     for i in range(len(boxes)):
         if i in indexes:
-            x, y, w, h = boxes[i]
+            cx, cy, x, y, w, h = boxes[i]
             label = str(classes[class_ids[i]])
-            confidence = confidences[i]
-            color = colors[class_ids[i]]
+            if distancing(i):
+                color = (0, 255, 0)
+            else:
+                color = (0, 0, 255)
             cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-            cv2.putText(frame, label + " " + str(round(confidence, 2)), (x, y + 30), font, 3, color, 3)
-
 
 
     elapsed_time = time.time() - starting_time
