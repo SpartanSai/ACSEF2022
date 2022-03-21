@@ -2,9 +2,16 @@ import cv2
 import numpy as np
 import time
 
-minDist = 10
+minDist = 800
+negDist = 100
 
 def close(i, j):
+    icx, icy, ix, iy, iw, ih = boxes[i]
+    jcx, jcy, jx, jy, jw, jh = boxes[j]
+    print("{0} {1}".format(icx, jcx))
+    if max(icx - jcx, jcx - icx) < minDist and max(icx - jcx, jcx - icx) > negDist:
+        print('yessir')
+        return True
     return False
 
 def distancing(ind):
